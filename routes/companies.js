@@ -3,8 +3,6 @@ var db = require("../db");
 const router = express.Router();
 
 router.get("", async function (req, res, next) {
-  console.log("poop");
-  debugger;
   try {
     const result = await db.query(`SELECT * FROM companies`);
     return res.json({ companies: result.rows });
@@ -15,13 +13,11 @@ router.get("", async function (req, res, next) {
 
 // GET /companies/[code];
 router.get("/:code", async function (req, res, next) {
-  debugger;
-
   try {
     const result = await db.query(`SELECT * FROM companies WHERE code=$1`, [
       req.params.code,
     ]);
-
+    console.log(result);
     return res.json(result.rows[0]);
   } catch (err) {
     return next(err);
