@@ -3,6 +3,7 @@ var db = require("../db");
 const router = express.Router();
 
 router.get("", async function (req, res, next) {
+  console.log("poop");
   try {
     const result = await db.query(`SELECT * FROM companies`);
     return res.json({ companies: result.rows });
