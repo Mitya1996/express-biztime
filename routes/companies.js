@@ -14,13 +14,25 @@ router.get("", async function (req, res, next) {
 });
 
 // GET /companies/[code];
+
+// Return obj of company: {company: {code, name, description, invoices: [id, ...]}}
+
+// If the company given cannot be found, this should return a 404 status response.
+
 router.get("/:code", async function (req, res, next) {
   try {
-    const result = await db.query(`SELECT * FROM companies WHERE code=$1`, [
-      req.params.code,
-    ]);
-    if (!result.rows[0]) throw new ExpressError("Company does not exist", 404);
-    return res.json(result.rows[0]);
+    const companyQuery = await db.query(
+      `SELECT * FROM companies WHERE code=$1`,
+      [req.params.code]
+    );
+    const company = companyQuery.rows[0];
+    if (!company) throw new ExpressError("Company does not exist", 404);
+    const invoicesQuery = await db.query(
+      `SELECT * FROM invoices WHERE comp_code = $1`,
+      [req.params.code]
+    );
+    const invoices = invoicesQuery.rows;
+    return res.json({ ...company, invoices: invoices });
   } catch (err) {
     return next(err);
   }
