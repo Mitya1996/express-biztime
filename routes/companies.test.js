@@ -18,8 +18,8 @@ describe("GET /", function () {
     const response = await request(app).get("/companies");
     expect(response.body).toEqual({
       companies: [
-        { code: "apple", name: "Apple" },
-        { code: "ibm", name: "IBM" },
+        { code: "apple", description: "Maker of OSX.", name: "Apple" },
+        { code: "ibm", description: "Big blue.", name: "IBM" },
       ],
     });
   });
@@ -33,7 +33,7 @@ describe("GET /apple", function () {
         code: "apple",
         name: "Apple",
         description: "Maker of OSX.",
-        invoices: [1, 2],
+        invoices: expect.arrayContaining(expect.tobedefined()),
       },
     });
   });
@@ -48,7 +48,7 @@ describe("POST /", function () {
   test("It should add company", async function () {
     const response = await request(app)
       .post("/companies")
-      .send({ name: "TacoTime", description: "Yum!" });
+      .send({ code: "tacotime", name: "TacoTime", description: "Yum!" });
 
     expect(response.body).toEqual({
       company: {
